@@ -1,6 +1,6 @@
 package com.nandina.api.config;
 
-import com.nandina.api.errors.NotFoundException;
+import com.nandina.api.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

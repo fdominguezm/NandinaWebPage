@@ -1,5 +1,6 @@
 package com.nandina.api.controllers;
 
+import com.nandina.api.config.auth.JwtService;
 import com.nandina.api.dtos.UserDTO;
 import com.nandina.api.exceptions.BadRequest;
 import com.nandina.api.exceptions.specifics.UserNotFoundException;
@@ -29,26 +30,29 @@ import java.io.IOException;
 public class AuthController {
 
     private final UserService userService;
+    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(
-            @ModelAttribute @Valid UserRegisterForm registerForm,
-            @RequestParam(value = "image") MultipartFile image) throws IOException {
+            @ModelAttribute @Valid UserRegisterForm registerForm
+//            ,
+//            @RequestParam(value = "image") MultipartFile image
+    ) throws IOException {
 
-        if (image.isEmpty()) {
-            throw new BadRequest("Image is empty");
-        }
+//        if (image.isEmpty()) {
+//            throw new BadRequest("Image is empty");
+//        }
 
         User user = new User();
         user.setEmail(registerForm.getEmail());
         user.setPassword(passwordEncoder.encode(registerForm.getPassword()));
         user.setName(registerForm.getName());
-        user.setProfilePicture(image.getBytes());
+//        user.setProfilePicture(image.getBytes());
         userService.createUser(user);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(jwtService.generateToken(registerForm.getEmail()));
     }
 
     @PostMapping("/login")
@@ -57,18 +61,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(loginForm.getEmail(), loginForm.getPassword())
         );
 
-        User user = userService.getUserByEmail(loginForm.getEmail())
-                .orElseThrow(() -> new UserNotFoundException(loginForm.getEmail()));
-
-
-        UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(user, null, auth.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-
-        HttpSession session = request.getSession(true); // Create session if it doesn't exist
-        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-
-        return ResponseEntity.ok(UserDTO.fromUser(user));
+        return ResponseEntity.ok(jwtService.generateToken(loginForm.getEmail()));
     }
 
 
