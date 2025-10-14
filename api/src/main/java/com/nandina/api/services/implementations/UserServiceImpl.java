@@ -66,31 +66,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.searchUsersByName(user, name, page, pageSize);
     }
 
-    @Override
-    public PagedContent<User> getFollowers(Long userId, int page, int pageSize) {
-        return userRepository.getFollowers(userId, page, pageSize);
-    }
-
-    @Override
-    public PagedContent<User> searchFollowers(Long userId, String name, int page, int pageSize) {
-        return userRepository.searchFollowers(userId, name, page, pageSize);
-    }
-
-    @Override
-    public PagedContent<User> getFollowing(Long userId, int page, int pageSize) {
-        return userRepository.getFollowing(userId, page, pageSize);
-    }
-
-    @Override
-    public PagedContent<User> searchFollowing(Long userId, String name, int page, int pageSize) {
-        return userRepository.searchFollowing(userId, name, page, pageSize);
-    }
-
-    @Override
-    public PagedContent<User> getFriends(Long userId, int page, int pageSize) {
-        return userRepository.getFriends(userId, page, pageSize);
-    }
-
 }
 
 
